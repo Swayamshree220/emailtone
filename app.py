@@ -98,17 +98,36 @@ def index():
 @app.route("/adjust-tone", methods=["POST"])
 def adjust_tone():
     data = request.get_json()
+    email = data.get("email", "").strip()
     tone = data.get("tone", "professional")
 
-    responses = {
-        "polite": "Thank you for your message. I understand your concern and would appreciate your support in resolving this.",
-        "neutral": "Please share the requested update so we can proceed.",
-        "professional": "Please provide the update by today so we can stay on schedule."
-    }
+    if not email:
+        return jsonify({"success": False, "error": "Email required"})
+
+    # Intent-preserving demo rewrite
+    if tone == "polite":
+        rewritten = (
+            "Hello,\n\n"
+            "I hope you are doing well. I wanted to follow up on the report that was due yesterday. "
+            "Could you please share an update on its status at your earliest convenience?\n\n"
+            "Thank you."
+        )
+    elif tone == "neutral":
+        rewritten = (
+            "Hello,\n\n"
+            "The report was due yesterday. Please share an update on its current status.\n\n"
+            "Regards."
+        )
+    else:  # professional
+        rewritten = (
+            "Hello,\n\n"
+            "The report was due yesterday. Please provide an update today so we can proceed as planned.\n\n"
+            "Regards."
+        )
 
     return jsonify({
         "success": True,
-        "rewritten_email": responses[tone]
+        "rewritten_email": rewritten
     })
 
 
