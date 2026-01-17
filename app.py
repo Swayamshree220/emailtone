@@ -95,51 +95,22 @@ def index():
                          templates=EMAIL_TEMPLATES,
                          personalities=PERSONALITIES)
 
-
 @app.route("/adjust-tone", methods=["POST"])
 def adjust_tone():
-    try:
-        data = request.get_json()
-        email = data.get("email", "").strip()
-        tone = data.get("tone", "professional")
-        aggression = int(data.get("aggression", 50))
-        personality = data.get("personality", None)
-        
-        if not email:
-            return jsonify({"success": False, "error": "Email required"}), 400
-        
-        # Build prompt
-        firmness = "soft, apologetic" if aggression < 30 else "balanced" if aggression < 70 else "direct, firm"
-        
-        personality_instruction = ""
-        if personality and personality in PERSONALITIES:
-            personality_instruction = f"\nWrite in the style of a {personality}: {PERSONALITIES[personality]}"
-        
-        prompt = f"""Rewrite this email in a {tone} tone with {firmness} language.{personality_instruction}
+    data = request.get_json()
+    tone = data.get("tone", "professional")
 
-Preserve all key information. Do NOT add new details. Only change tone and phrasing.
+    responses = {
+        "polite": "Thank you for your message. I understand your concern and would appreciate your support in resolving this.",
+        "neutral": "Please share the requested update so we can proceed.",
+        "professional": "Please provide the update by today so we can stay on schedule."
+    }
 
-ORIGINAL:
-{email}
+    return jsonify({
+        "success": True,
+        "rewritten_email": responses[tone]
+    })
 
-REWRITTEN EMAIL:"""
-
-        result = call_groq_api(prompt)
-        
-        if result["success"]:
-            # Update stats
-            stats["emails_processed"] += 1
-            stats["most_used_tone"][tone] = stats["most_used_tone"].get(tone, 0) + 1
-            
-            return jsonify({
-                "success": True,
-                "rewritten_email": result["result"]
-            })
-        
-        return jsonify(result), 500
-        
-    except Exception as e:
-        return jsonify({"success": False, "error": str(e)}), 500
 
 
 @app.route("/analyze-toxicity", methods=["POST"])
