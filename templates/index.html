@@ -3,282 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Corporate Email Assistant - AI-Powered Communication</title>
+    <title>Corporate Email Assistant</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#667eea">
 </head>
 <body>
-    <!-- Particle Background -->
-    <div id="particles-js"></div>
+    <!-- Header -->
+    <header>
+        <div class="logo">📧 Email Assistant</div>
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span class="stat-value" id="emails-count">0</span>
+                <span class="stat-label">Improved</span>
+            </div>
+        </div>
+    </header>
 
     <div class="container">
-        <!-- Header with Stats -->
-        <header>
-            <div class="logo">📧 Email Assistant AI</div>
-            <div class="stats-bar" id="stats-bar">
-                <div class="stat-item">
-                    <span class="stat-value" id="emails-count">0</span>
-                    <span class="stat-label">Emails Improved</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-value" id="toxicity-removed">0%</span>
-                    <span class="stat-label">Toxicity Removed</span>
-                </div>
-            </div>
-        </header>
+        <h1>Corporate Email Assistant</h1>
+        <p class="tagline">Transform harsh emails into professional communication</p>
 
-        <h1>✨ Transform Your Corporate Communication</h1>
-        <p class="tagline">Write better. Decode faster. Communicate clearer.</p>
-
-        <!-- Demo Video Section -->
-        <div class="demo-section">
-            <div class="demo-badge">🎬 See it in action (15s)</div>
-            <p class="demo-text">Watch how we transform toxic emails into professional communication</p>
-        </div>
-
-        <!-- Mode Selector Tabs -->
+        <!-- Mode Tabs -->
         <div class="mode-selector">
-            <button class="mode-btn active" data-mode="rewrite">
-                <span class="mode-icon">✍️</span>
-                <span class="mode-name">Rewrite Email</span>
-            </button>
-            <button class="mode-btn" data-mode="toxicity">
-                <span class="mode-icon">🔥</span>
-                <span class="mode-name">Toxicity Heatmap</span>
-            </button>
-            <button class="mode-btn" data-mode="decode">
-                <span class="mode-icon">🔍</span>
-                <span class="mode-name">Decode Email</span>
-            </button>
-            <button class="mode-btn" data-mode="thread">
-                <span class="mode-icon">📊</span>
-                <span class="mode-name">Thread Analysis</span>
-            </button>
+            <button class="mode-btn active" data-mode="rewrite">✍️ Rewrite</button>
+            <button class="mode-btn" data-mode="toxicity">🔥 Toxicity</button>
+            <button class="mode-btn" data-mode="decode">🔍 Decode</button>
+            <button class="mode-btn" data-mode="thread">📊 Thread</button>
         </div>
 
         <!-- REWRITE MODE -->
         <div id="rewrite-mode" class="mode-panel active">
-            <!-- Template Selector -->
-            <div class="template-selector">
-                <label>📋 Quick Start Templates:</label>
-                <div class="template-buttons">
-                    <button class="template-btn" data-template="deadline_reminder">Deadline Reminder</button>
-                    <button class="template-btn" data-template="meeting_request">Meeting Request</button>
-                    <button class="template-btn" data-template="feedback">Critical Feedback</button>
-                    <button class="template-btn" data-template="followup">Follow-up</button>
-                </div>
+            <div class="template-bar">
+                <span class="template-label">Quick templates:</span>
+                <button class="template-btn" data-template="deadline_reminder">Deadline</button>
+                <button class="template-btn" data-template="meeting_request">Meeting</button>
+                <button class="template-btn" data-template="feedback">Feedback</button>
+                <button class="template-btn" data-template="followup">Follow-up</button>
             </div>
 
-            <div class="split-view">
-                <div class="input-pane">
-                    <label>Your Email Draft (Before):</label>
-                    <textarea id="email-input" placeholder="Example: 'This is unacceptable. You need to fix this immediately.'"></textarea>
-                    
-                    <div class="controls-grid">
-                        <div class="control-group">
-                            <label>Tone Style:</label>
-                            <select id="tone-select">
-                                {% for key, value in tones.items() %}
-                                <option value="{{ key }}">{{ value.emoji }} {{ value.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
+            <div class="form-section">
+                <div class="input-group">
+                    <label>Your Email:</label>
+                    <textarea id="email-input" placeholder="Type your email here..."></textarea>
+                </div>
 
-                        <div class="control-group">
-                            <label>AI Personality (Optional):</label>
-                            <select id="personality-select">
-                                <option value="">Standard Professional</option>
-                                {% for key, value in personalities.items() %}
-                                <option value="{{ key }}">{{ key.title() }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
+                <div class="controls">
+                    <div class="control">
+                        <label>Tone:</label>
+                        <select id="tone-select">
+                            {% for key, value in tones.items() %}
+                            <option value="{{ key }}">{{ value.name }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
 
-                    <div class="slider-container">
-                        <label>Firmness Level: <span id="aggression-value">50</span>%</label>
+                    <div class="control">
+                        <label>Firmness: <span id="aggression-value">50</span>%</label>
                         <input type="range" id="aggression-slider" min="0" max="100" value="50">
-                        <div class="slider-labels">
-                            <span>😊 Soft</span>
-                            <span>😐 Balanced</span>
-                            <span>💼 Direct</span>
-                        </div>
+                    </div>
+
+                    <div class="control">
+                        <label>Style:</label>
+                        <select id="personality-select">
+                            <option value="">Professional</option>
+                            {% for key in personalities %}
+                            <option value="{{ key }}">{{ key.title() }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                 </div>
 
-                <div class="output-pane" id="rewrite-output" style="display: none;">
-                    <label>✨ Improved Email (After):</label>
-                    <div class="output-box" id="rewritten-text"></div>
-                    <div class="action-buttons">
-                        <button class="copy-btn" id="copy-rewrite">📋 Copy</button>
-                        <button class="compare-btn" id="compare-btn">🔄 Show Comparison</button>
-                    </div>
+                <button class="btn-primary" id="rewrite-btn">Transform Email</button>
+
+                <div class="result" id="rewrite-output" style="display: none;">
+                    <label>Result:</label>
+                    <div class="result-box" id="rewritten-text"></div>
+                    <button class="btn-secondary" id="copy-rewrite">Copy</button>
                 </div>
             </div>
-
-            <button class="action-btn primary" id="rewrite-btn">
-                <span class="btn-icon">✨</span>
-                <span class="btn-text">Transform Email</span>
-            </button>
         </div>
 
-        <!-- TOXICITY HEATMAP MODE -->
+        <!-- TOXICITY MODE -->
         <div id="toxicity-mode" class="mode-panel">
-            <div class="feature-highlight">
-                <h3>🔥 Toxicity Detector</h3>
-                <p>Instantly identify passive-aggressive phrases and hidden hostility</p>
-            </div>
-
-            <div class="input-section">
-                <label>Paste Email to Analyze:</label>
-                <textarea id="toxicity-input" placeholder="Example: 'Per my last email, just circling back on this. As I mentioned before, we need this ASAP.'"></textarea>
-            </div>
-
-            <button class="action-btn danger" id="toxicity-btn">
-                <span class="btn-icon">🔍</span>
-                <span class="btn-text">Scan for Toxicity</span>
-            </button>
-
-            <div class="output-section" id="toxicity-output" style="display: none;">
-                <div class="toxicity-meter">
-                    <label>Overall Toxicity Score:</label>
-                    <div class="meter-bar">
-                        <div class="meter-fill" id="toxicity-fill" style="width: 0%"></div>
-                        <span class="meter-text" id="toxicity-percent">0%</span>
-                    </div>
-                    <p class="toxicity-desc" id="toxicity-desc"></p>
+            <div class="form-section">
+                <div class="input-group">
+                    <label>Email to Analyze:</label>
+                    <textarea id="toxicity-input" placeholder="Paste email here..."></textarea>
                 </div>
 
-                <div class="highlighted-email" id="highlighted-email"></div>
+                <button class="btn-primary" id="toxicity-btn">Analyze</button>
 
-                <div class="phrase-list" id="phrase-list"></div>
+                <div class="result" id="toxicity-output" style="display: none;">
+                    <div class="meter">
+                        <label>Toxicity: <span id="toxicity-percent">0%</span></label>
+                        <div class="meter-bar">
+                            <div class="meter-fill" id="toxicity-fill"></div>
+                        </div>
+                        <p class="meter-desc" id="toxicity-desc"></p>
+                    </div>
+
+                    <div class="highlighted-text" id="highlighted-email"></div>
+                    <div id="phrase-list"></div>
+                </div>
             </div>
         </div>
 
         <!-- DECODE MODE -->
         <div id="decode-mode" class="mode-panel">
-            <div class="feature-highlight">
-                <h3>🔍 Corporate Speak Decoder</h3>
-                <p>Reveal what they're REALLY saying behind the professional facade</p>
-            </div>
+            <div class="form-section">
+                <div class="input-group">
+                    <label>Email to Decode:</label>
+                    <textarea id="decode-input" placeholder="Paste corporate email here..."></textarea>
+                </div>
 
-            <div class="input-section">
-                <label>Email to Decode:</label>
-                <textarea id="decode-input" placeholder="Example: 'Per my last email, I wanted to circle back on the deliverables. Let's sync up when you have bandwidth.'"></textarea>
-            </div>
+                <button class="btn-primary" id="decode-btn">Decode</button>
 
-            <button class="action-btn secondary" id="decode-btn">
-                <span class="btn-icon">🔓</span>
-                <span class="btn-text">Decode Hidden Meaning</span>
-            </button>
-
-            <div class="output-section" id="decode-output" style="display: none;">
-                <div class="aggression-meter">
-                    <label>Passive-Aggression Score:</label>
+                <div class="result" id="decode-output" style="display: none;">
                     <div class="score-display">
+                        <label>Aggression Score: <span id="aggression-score">0/10</span></label>
                         <div class="score-bar">
                             <div class="score-fill" id="aggression-fill"></div>
                         </div>
-                        <span class="score-value" id="aggression-score">0/10</span>
                     </div>
+                    <div class="result-box" id="decoded-text"></div>
                 </div>
-                <div class="analysis-box" id="decoded-text"></div>
             </div>
         </div>
 
-        <!-- THREAD ANALYSIS MODE -->
+        <!-- THREAD MODE -->
         <div id="thread-mode" class="mode-panel">
-            <div class="feature-highlight">
-                <h3>📊 Email Thread Analyzer</h3>
-                <p>Detect tone escalation and communication breakdown patterns</p>
-            </div>
-
-            <div class="input-section">
-                <label>Paste Full Email Thread:</label>
-                <textarea id="thread-input" rows="10" placeholder="Paste entire conversation from oldest to newest..."></textarea>
-            </div>
-
-            <button class="action-btn info" id="analyze-btn">
-                <span class="btn-icon">📈</span>
-                <span class="btn-text">Analyze Communication</span>
-            </button>
-
-            <div class="output-section" id="thread-output" style="display: none;">
-                <div class="analysis-box" id="thread-analysis"></div>
-            </div>
-        </div>
-
-        <!-- ROI Calculator -->
-        <div class="roi-section">
-            <h3>💰 Calculate Your Company's Savings</h3>
-            <div class="roi-calculator">
-                <div class="roi-inputs">
-                    <div class="roi-input-group">
-                        <label>Number of Employees:</label>
-                        <input type="number" id="roi-employees" value="50" min="1">
-                    </div>
-                    <div class="roi-input-group">
-                        <label>Emails per Employee/Day:</label>
-                        <input type="number" id="roi-emails" value="20" min="1">
-                    </div>
+            <div class="form-section">
+                <div class="input-group">
+                    <label>Email Thread:</label>
+                    <textarea id="thread-input" rows="8" placeholder="Paste full conversation..."></textarea>
                 </div>
-                <div class="roi-result">
-                    <h2>$<span id="annual-savings">125,000</span></h2>
-                    <p>Annual savings from reduced miscommunication</p>
-                    <small>Based on 10 min/day saved per employee @ $50/hr</small>
+
+                <button class="btn-primary" id="analyze-btn">Analyze</button>
+
+                <div class="result" id="thread-output" style="display: none;">
+                    <div class="result-box" id="thread-analysis"></div>
                 </div>
             </div>
-        </div>
-
-        <!-- Loading Indicator -->
-        <div class="loader" id="loader" style="display: none;">
-            <div class="spinner"></div>
-            <p>Processing with AI...</p>
         </div>
     </div>
 
-    <!-- AI Email Coach Chat -->
-    <button class="chat-toggle" id="chat-toggle">
-        💬 Ask Email Coach
-    </button>
+    <!-- Chat -->
+    <button class="chat-btn" id="chat-toggle">💬</button>
 
     <div class="chat-panel" id="chat-panel">
         <div class="chat-header">
-            <div class="chat-title">
-                <span class="chat-icon">🤖</span>
-                <span>Email Communication Coach</span>
-            </div>
+            <span>Email Coach</span>
             <button class="chat-close" id="chat-close">✕</button>
         </div>
 
-        <div class="chat-suggestions">
-            <button class="suggestion-chip" data-suggestion="Is this email too harsh?">Is this email too harsh?</button>
-            <button class="suggestion-chip" data-suggestion="Make this more polite">Make this more polite</button>
-            <button class="suggestion-chip" data-suggestion="Which tone should I choose?">Which tone should I choose?</button>
-            <button class="suggestion-chip" data-suggestion="Explain what sounds aggressive">What sounds aggressive?</button>
+        <div class="chat-chips">
+            <button class="chip" data-suggestion="Is this email too harsh?">Too harsh?</button>
+            <button class="chip" data-suggestion="Make this more polite">More polite</button>
+            <button class="chip" data-suggestion="Which tone should I choose?">Which tone?</button>
         </div>
 
         <div class="chat-messages" id="chat-messages">
-            <div class="chat-message bot">
-                <div class="message-content">
-                    Hello! I'm your email communication coach. I can help you improve tone, clarity, and professionalism. What would you like to know?
-                </div>
+            <div class="chat-msg bot">
+                <div class="msg-content">Hi! I'm your email coach. How can I help?</div>
             </div>
         </div>
 
-        <div class="chat-input-area">
-            <input type="text" class="chat-input" id="chat-input" placeholder="Ask about your email...">
+        <div class="chat-input-wrap">
+            <input type="text" class="chat-input" id="chat-input" placeholder="Ask a question...">
             <button class="chat-send" id="chat-send">Send</button>
         </div>
 
-        <div class="typing-indicator" id="typing-indicator" style="display: none;">
+        <div class="typing" id="typing-indicator" style="display: none;">
             <span></span><span></span><span></span>
         </div>
     </div>
 
-    <!-- Particles.js -->
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <!-- Loader -->
+    <div class="loader" id="loader" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
